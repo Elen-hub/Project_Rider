@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Accelerate : BaseButton
+public class BreakButton : BaseButton
 {
     MoveSystem m_playerMoveSystem;
     BaseCar m_character;
     public BaseCar SetInputCar { set { m_character = value; } }
-    public new Accelerate Init()
+    public new BreakButton Init()
     {
         base.Init();
         return this;
@@ -16,11 +16,12 @@ public class Accelerate : BaseButton
     public override void OnPointerDown(PointerEventData eventData)
     {
         if (m_character != null)
-            m_character.GetMoveSystem.SetAccelerate = true;
+            m_character.GetMoveSystem.SetBreak = true;
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
-
+        if (m_character != null)
+            m_character.GetMoveSystem.SetBreak = false;
     }
     private void Update()
     {

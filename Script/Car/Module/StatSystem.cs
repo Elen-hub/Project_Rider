@@ -7,6 +7,7 @@ public struct Stat
     public float AccelerateSpeed;
     public float MaxSpeed;
     public float Handling;
+    public float BreakFriction;
 }
 public class StatSystem : MonoBehaviour
 {

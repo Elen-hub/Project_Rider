@@ -5,17 +5,17 @@ using UnityEngine;
 public class Game : UIBase
 {
     HUD_Input m_input;
-    HUD_Status m_status;
+    HUD_Dashboard m_dashBoard;
     public BaseCar SetTarget { 
         set { 
             m_input.SetTarget = value;
-            m_status.SetTarget = value;
+            m_dashBoard.SetTarget = value;
         } 
     }
     public override UIBase Init()
     {
         m_input = GetComponentInChildren<HUD_Input>().Init();
-        m_status = GetComponentInChildren<HUD_Status>().Init();
+        m_dashBoard = GetComponentInChildren<HUD_Dashboard>().Init();
         return base.Init();
     }
     public override void Open()

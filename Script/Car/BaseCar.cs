@@ -14,17 +14,18 @@ public class BaseCar : MonoBehaviour
     {
         Stat testStat = new Stat()
         {
-            AccelerateSpeed = 0.5f,
-            MaxSpeed = 2.5f,
-            Handling = 0.1f
+            AccelerateSpeed = 5,
+            MaxSpeed = 25,
+            Handling = 1,
+            BreakFriction = 10,
         };
 
         m_module_StatSystem = GetComponent<StatSystem>().Init(testStat);
         m_module_MoveSystem = GetComponent<MoveSystem>().Init(ref m_module_StatSystem);
         return this;
     }
-    private void Update()
+    private void FixedUpdate()
     {
-        m_module_MoveSystem.NextFrame(Time.deltaTime);
+        m_module_MoveSystem.NextFrame(Time.fixedDeltaTime);
     }
 }
