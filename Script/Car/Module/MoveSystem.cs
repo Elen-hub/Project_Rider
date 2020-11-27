@@ -11,10 +11,12 @@ public enum EMoveState
 
 public class MoveSystem : MonoBehaviour
 {
+    #region GearVar
     float[] m_gearCoefficient = new float[6] { 1.3f, 1.1f, 1, 0.6f, 0.3f, 0.1f };
     float[] m_gearSpeed;
     int m_currGear = 0;
     const int m_maxGear = 5;
+    #endregion
 
     [SerializeField] EMoveState m_moveState;
     StatSystem m_statSystem;
@@ -23,8 +25,11 @@ public class MoveSystem : MonoBehaviour
     float m_speed;
     float m_currSpeed;
     Vector3 m_velocity;
+    Vector3 m_angle;
+
     public Vector3 Velociry { get { return m_velocity; } set { m_velocity = value; } }
     public float SetSpeed { set { m_speed = value; } }
+    // 5는 속도계수
     public float GetSpeed { get { return m_currSpeed; } }
     public bool SetAccelerate {
         set {
@@ -39,16 +44,17 @@ public class MoveSystem : MonoBehaviour
     }
     public float Handling { get; set; }
     public float CurrGear { get { return m_currGear; } }
-    Vector3 m_angle;
+
     public MoveSystem Init(ref StatSystem stat)
     {
         m_statSystem = stat;
-        m_gearSpeed = new float[6] { stat.GetStat.MaxSpeed * 0.25f, stat.GetStat.MaxSpeed * 0.45f, stat.GetStat.MaxSpeed * 0.65f, stat.GetStat.MaxSpeed * 0.8f, stat.GetStat.MaxSpeed * 0.92f, stat.GetStat.MaxSpeed };
+        m_gearSpeed = new float[6] { stat.GetStat.MaxSpeed * 0.25f, stat.GetStat.MaxSpeed * 0.45f, stat.GetStat.MaxSpeed * 0.65f, stat.GetStat.MaxSpeed * 0.8f, stat.GetStat.MaxSpeed * 0.92f, stat.GetStat.MaxSpeed*1.1f };
         return this;
     }
     public void NextFrame(float deltaTime)
     {
         float speed = 0;
+        // 마찰력 계산 (기본 마찰 + 코너링마찰계수 * 회전세기)
         m_friction = GameCoefficient.DefaultFriction + GameCoefficient.CornorFriction * Mathf.Abs(Handling);
 
         switch (m_moveState)
@@ -65,6 +71,7 @@ public class MoveSystem : MonoBehaviour
         }
         m_speed = speed;
 
+        // 기어 상태
         if (m_speed >= m_gearSpeed[m_currGear])
             m_currGear = Mathf.Clamp(m_currGear + 1, 0, m_maxGear);
         else if(m_currGear != 0 && m_speed <= m_gearSpeed[m_currGear - 1])
@@ -77,12 +84,13 @@ public class MoveSystem : MonoBehaviour
         m_angle = transform.eulerAngles;
         m_angle.y += (m_moveState != EMoveState.Break ? GameCoefficient.DefaultHandling : GameCoefficient.BreakHandling)
             * Handling * deltaTime * m_statSystem.GetStat.Handling;
+
         transform.eulerAngles = m_angle;
 
-        // 가속
+        // 가속 (관성을 구현하기 위해 이전 가속도를 연산에 합산)
         m_velocity = (m_velocity + transform.forward * m_speed * deltaTime).normalized * m_speed * deltaTime;
         transform.position += m_velocity;
-        // 속도
+        // 속도 (이전거리와 현제거리 * 프레임)
         m_currSpeed = Vector3.Distance(Vector3.zero, m_velocity) * 1 / deltaTime;
     }
 }

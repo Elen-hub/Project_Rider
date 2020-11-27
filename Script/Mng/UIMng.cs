@@ -37,6 +37,6 @@ public class UIMng : TSingleton<UIMng>
     }
     public void Init()
     {
-        UICamera = GameObject.Find("UICamera").GetComponent<Camera>();
+        UICamera = CameraMng.Instance.GetCamera(ECameraType.UI).Camera;
     }
 }

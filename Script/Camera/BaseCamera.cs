@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class BaseCamera : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Camera Camera;
+    public virtual BaseCamera Init()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Camera = GetComponentInChildren<Camera>();
+        return this;
     }
 }

@@ -29,7 +29,7 @@ public class HUD_Dashboard : MonoBehaviour
     }
     private void LateUpdate()
     {
-        float speed = m_character.GetMoveSystem.GetSpeed * 5;
+        float speed = m_character.GetMoveSystem.GetSpeed;
         m_speedText.text = speed.ToString("000") + m_speedString;
         m_gearText.text = m_gearString + (m_character.GetMoveSystem.CurrGear+1).ToString();
         m_speedoMetor.eulerAngles = -Vector3.forward * speed;
