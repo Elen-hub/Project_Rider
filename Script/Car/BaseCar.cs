@@ -14,10 +14,10 @@ public class BaseCar : MonoBehaviour
     {
         Stat testStat = new Stat()
         {
-            AccelerateSpeed = 40,
+            AccelerateSpeed = 30,
             MaxSpeed = 160,
             Handling = 1,
-            BreakFriction = 25,
+            BreakFriction = 50,
         };
 
         m_module_StatSystem = GetComponent<StatSystem>().Init(testStat);
