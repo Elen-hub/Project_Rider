@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class PlayerCamera : BaseCamera
 {
-    static Vector3 m_initPos = new Vector3(0, 4.25f, 0);
-    static Vector3 m_initAngle = new Vector3(15, 0, 0);
+    static Vector3 m_initPos = new Vector3(0, 5, 0);
+    static Vector3 m_initAngle = new Vector3(25, 0, 0);
     Vector3 m_pos;
     float m_prevSpeed;
 
-    const float m_minDistanceToTarget = 7.5f;
-    const float m_maxDistanceToTarget = 9.5f;
-    const float m_maxDistanceToSpeed = 125;
+    const float m_minDistanceToTarget = 6f;
+    const float m_maxDistanceToTarget = 10f;
+    const float m_maxDistanceToSpeed = 130f;
     float m_distanceToTarget;
 
     BaseCar m_character;
@@ -41,9 +41,13 @@ public class PlayerCamera : BaseCamera
         m_pos -= m_character.transform.forward * m_distanceToTarget;
         transform.position = m_pos;
 
+        if (m_character.GetMoveSystem.Velociry == Vector3.zero)
+            return;
+
         float angle = Vector3.Angle(Vector3.forward, m_character.GetMoveSystem.Velociry);
         if (m_character.GetMoveSystem.Velociry.x < 0)
             angle *= -1;
+
         transform.rotation = Quaternion.Euler(m_initAngle.x, angle, 0);
         m_prevSpeed = currSpeed;
     }

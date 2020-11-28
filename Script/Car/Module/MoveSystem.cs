@@ -54,7 +54,7 @@ public class MoveSystem : MonoBehaviour
     public void NextFrame(float deltaTime)
     {
         float speed = 0;
-        float frictionCoe = Mathf.Clamp01((0.1f * m_statSystem.GetStat.MaxSpeed + m_speed) / m_statSystem.GetStat.MaxSpeed);
+        float frictionCoe = Mathf.Clamp01((0.25f * m_statSystem.GetStat.MaxSpeed + m_speed) / m_statSystem.GetStat.MaxSpeed);
         // 마찰력 계산 (기본 마찰 + 코너링마찰계수 * 회전세기)
         m_friction = (GameCoefficient.DefaultFriction + GameCoefficient.CornorFriction * Mathf.Abs(Handling)) * frictionCoe;
         switch (m_moveState)
@@ -77,17 +77,17 @@ public class MoveSystem : MonoBehaviour
         else if(m_currGear != 0 && m_speed <= m_gearSpeed[m_currGear - 1])
             m_currGear = Mathf.Clamp(m_currGear - 1, 0, m_maxGear);
 
-        if (m_speed == 0)
-            return;
+        if (m_speed != 0)
+        {
+            // 핸들링
+            m_angle = transform.eulerAngles;
+            m_angle.y += (m_moveState != EMoveState.Break ? GameCoefficient.DefaultHandling : GameCoefficient.BreakHandling)
+                * Handling * deltaTime * m_statSystem.GetStat.Handling * frictionCoe;
 
-        // 핸들링
-        m_angle = transform.eulerAngles;
-        m_angle.y += (m_moveState != EMoveState.Break ? GameCoefficient.DefaultHandling : GameCoefficient.BreakHandling)
-            * Handling * deltaTime * m_statSystem.GetStat.Handling * frictionCoe;
+            transform.eulerAngles = m_angle;
+        }
 
-        transform.eulerAngles = m_angle;
-
-        // 가속 (관성을 구현하기 위해 이전 가속도를 연산에 합산)
+        // 가속
         m_velocity = (m_velocity + (transform.forward * m_speed * deltaTime)) * 0.5f;
         transform.position += m_velocity;
         // 속도 (이전거리와 현제거리 * 프레임)
