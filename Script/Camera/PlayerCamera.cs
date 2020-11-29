@@ -9,8 +9,8 @@ public class PlayerCamera : BaseCamera
     Vector3 m_pos;
     float m_prevSpeed;
 
-    const float m_minDistanceToTarget = 6f;
-    const float m_maxDistanceToTarget = 10f;
+    const float m_minDistanceToTarget = 9f;
+    const float m_maxDistanceToTarget = 13f;
     const float m_maxDistanceToSpeed = 130f;
     float m_distanceToTarget;
 
@@ -41,14 +41,7 @@ public class PlayerCamera : BaseCamera
         m_pos -= m_character.transform.forward * m_distanceToTarget;
         transform.position = m_pos;
 
-        if (m_character.GetMoveSystem.Velociry == Vector3.zero)
-            return;
-
-        float angle = Vector3.Angle(Vector3.forward, m_character.GetMoveSystem.Velociry);
-        if (m_character.GetMoveSystem.Velociry.x < 0)
-            angle *= -1;
-
-        transform.rotation = Quaternion.Euler(m_initAngle.x, angle, 0);
+        transform.rotation = Quaternion.Euler(m_initAngle.x, m_character.transform.eulerAngles.y, 0);
         m_prevSpeed = currSpeed;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.IO;
 
 struct ARequestHandler
 {
@@ -24,6 +25,10 @@ public class AStarMng : TSingleton<AStarMng>
     AStarPathfinding m_pathFinding;
     bool m_isDone;
     public AGrid Grid { set { m_pathFinding.Grid = value; } }
+    public ANode GetNode(Vector3 position)
+    {
+        return m_pathFinding.GetNode(position);
+    }
     // 큐에 요청받은 내용을 구조체를 통하여 입력
     public void RequestPathfinding(AStarAgent agent, Vector3 start, Vector3 end)
     {
@@ -48,14 +53,21 @@ public class AStarMng : TSingleton<AStarMng>
             StartCoroutine(m_pathFinding.SearchPath(m_currentHandler.Start, m_currentHandler.End));
         }
     }
-    public Stack<Vector3> TestSearch(Vector3 start, Vector3 end)
-    {
-        return m_pathFinding.TestSearch(start, end);
-    }
     // 초기화
     public void Init()
     {
         m_pathFinding = new AStarPathfinding();
+
+        TextAsset asset = Resources.Load<TextAsset>("AStarBuildArray");
+        string[] value = asset.text.Split('_');
+        GameObject obj = new GameObject(typeof(AGrid).ToString(), typeof(AGrid));
+        AGrid grid = obj.GetComponent<AGrid>();
+        string[] arr = value[0].Split(',');
+        grid.NodeRadius = float.Parse(arr[0]);
+        grid.WorldSize.x = float.Parse(arr[1]);
+        grid.WorldSize.y = float.Parse(arr[2]);
+        grid.CreateGrid(value);
+        Grid = grid;
     }
 }
 

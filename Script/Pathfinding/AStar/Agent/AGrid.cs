@@ -11,6 +11,7 @@ public class AGrid : MonoBehaviour
     public ANode[,] Nodes;
     int m_gridSizeX, m_gridSizeY;
 
+    #region CraeteGrid Overloading
     // 에디터에서 그리드를 생성하는 함수
     public void CreateGrid()
     {
@@ -45,8 +46,11 @@ public class AGrid : MonoBehaviour
             bool isWalkable = value[2] == "True";
             Vector3 pos = new Vector3(float.Parse(value[3]), 0, float.Parse(value[4]));
             Nodes[x, y] = new ANode(isWalkable, pos, x, y);
+            Nodes[x, y].Speed = float.Parse(value[5]);
+            Nodes[x, y].Friction = float.Parse(value[6]);
         }
     }
+    #endregion
     // 임의의 노드의 이웃한 노드들을 받아오는 함수
     public List<ANode> GetNeighbourNode(ANode node)
     {
@@ -71,7 +75,7 @@ public class AGrid : MonoBehaviour
     public ANode GetNode(Vector3 position)
     {
         float percentX = Mathf.Clamp01((position.x + WorldSize.x * 0.5f) / WorldSize.x);
-        float percentY = Mathf.Clamp01((position.y + WorldSize.y * 0.5f) / WorldSize.y);
+        float percentY = Mathf.Clamp01((position.z + WorldSize.y * 0.5f) / WorldSize.y);
         int x = Mathf.RoundToInt((m_gridSizeX - 1) * percentX);
         int y = Mathf.RoundToInt((m_gridSizeY - 1) * percentY);
         return Nodes[x, y];
@@ -89,7 +93,7 @@ public class AGrid : MonoBehaviour
             foreach (ANode node in Nodes)
             {
                 Gizmos.color = node.IsWalkable ? blueColor : redColor;
-                Gizmos.DrawCube(node.Position, Vector3.one * (NodeRadius*2));
+                Gizmos.DrawCube(node.Position, Vector3.one * (NodeRadius * 2));
             }
         }
     }

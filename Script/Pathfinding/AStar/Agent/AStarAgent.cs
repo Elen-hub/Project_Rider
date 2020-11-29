@@ -26,10 +26,17 @@ public class AStarAgent : MonoBehaviour
     public Vector2 Velocity {
         get { return m_velocity; }
     }
-    public void TestSearch(Vector2 start, Vector2 end)
+    public ANode GetNodeToPosition(Vector3 pos)
     {
-        m_path = null;
-        m_path = AStarMng.Instance.TestSearch(start, end);
+        return AStarMng.Instance.GetNode(pos);
+    }
+    public bool IsPossibleMoveToPosition(Vector3 pos)
+    {
+        ANode node = GetNodeToPosition(pos);
+        if (node == null)
+            return false;
+
+        return node.IsWalkable;
     }
     public void SetDestination(Vector3 position)
     {
@@ -73,15 +80,15 @@ public class AStarAgent : MonoBehaviour
         m_state = EAgentState.Standby;
     }
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        if (m_path != null && m_path.Count > 1)
-        {
-            Vector3[] array = m_path.ToArray();
-            Gizmos.color = Color.black;
-            for (int i = 0; i < array.Length; ++i)
-                Gizmos.DrawCube(array[i], Vector3.one * 0.5f);
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    if (m_path != null && m_path.Count > 1)
+    //    {
+    //        Vector3[] array = m_path.ToArray();
+    //        Gizmos.color = Color.black;
+    //        for (int i = 0; i < array.Length; ++i)
+    //            Gizmos.DrawCube(array[i], Vector3.one * 20);
+    //    }
+    //}
 #endif
 }

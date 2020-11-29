@@ -7,6 +7,7 @@ public enum ECameraType
     Player,
     UI,
     World,
+    Map,
 }
 public class CameraMng : TSingleton<CameraMng>
 {
@@ -15,6 +16,7 @@ public class CameraMng : TSingleton<CameraMng>
     {
         m_cameraDic.Add(ECameraType.Player, InstantiateCamera<PlayerCamera>(ECameraType.Player));
         m_cameraDic.Add(ECameraType.UI, InstantiateCamera<BaseCamera>(ECameraType.UI));
+        m_cameraDic.Add(ECameraType.Map, InstantiateCamera<BaseCamera>(ECameraType.Map));
     }
     public T InstantiateCamera<T>(ECameraType type) where T : BaseCamera
     {

@@ -7,6 +7,8 @@ public class ANode
     public ANode PrevNode { get; set; }
     public bool IsWalkable { get; set; }
     public Vector3 Position { get; set; }
+    public float Friction { get; set; } = 0;
+    public float Speed { get; set; } = 1;
     int m_gridX;
     int m_gridY;
     public int GetGridX { get { return m_gridX; } }

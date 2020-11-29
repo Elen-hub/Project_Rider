@@ -15,11 +15,13 @@ public class BreakButton : BaseButton
     }
     public override void OnPointerDown(PointerEventData eventData)
     {
+        base.OnPointerDown(eventData);
         if (m_character != null)
             m_character.GetMoveSystem.SetBreak = true;
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
+        base.OnPointerUp(eventData);
         if (m_character != null)
             m_character.GetMoveSystem.SetBreak = false;
     }

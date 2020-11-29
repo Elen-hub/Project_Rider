@@ -14,6 +14,10 @@ public class AStarPathfinding
     {
         set { m_buildGrid = value; }
     }
+    public ANode GetNode(Vector3 position)
+    {
+        return m_buildGrid.GetNode(position);
+    }
     // 노드를 추적하여 Stack에 담아 리턴 
     Stack<Vector3> GetPath(Vector3 startPos, Vector3 targetPos)
     {
@@ -83,48 +87,5 @@ public class AStarPathfinding
         int x = Mathf.Abs(a.GetGridX - b.GetGridX);
         int y = Mathf.Abs(a.GetGridY - b.GetGridY);
         return x > y ? m_diagonalCost * y + m_straightCost * (x - y) : m_diagonalCost * x + m_straightCost * (y - x);
-    }
-    public Stack<Vector3> TestSearch(Vector3 startPos, Vector3 endPos)
-    {
-        m_startNode = m_buildGrid.GetNode(startPos);
-        m_endNode = m_buildGrid.GetNode(endPos);
-
-        if (m_startNode.IsWalkable && m_endNode.IsWalkable)
-        {
-            List<ANode> openNode = new List<ANode>();
-            HashSet<ANode> closeNode = new HashSet<ANode>();
-            openNode.Add(m_startNode);
-            while (openNode.Count > 0)
-            {
-                ANode current = openNode[0];
-
-                for (int i = 1; i < openNode.Count; ++i)
-                    if (openNode[i].GetFCost < current.GetFCost || openNode[i].GetFCost == current.GetFCost && openNode[i].HCost < current.HCost)
-                        current = openNode[i];
-
-                openNode.Remove(current);
-                closeNode.Add(current);
-
-                if (current == m_endNode)
-                    break;
-
-                foreach (ANode node in m_buildGrid.GetNeighbourNode(current))
-                {
-                    if (!node.IsWalkable || closeNode.Contains(node))
-                        continue;
-
-                    int currentNeighbourCost = current.GCost + GetCost(node, m_endNode);
-                    if (currentNeighbourCost < node.GCost || !openNode.Contains(node))
-                    {
-                        node.GCost = currentNeighbourCost;
-                        node.HCost = GetCost(node, m_endNode);
-                        node.PrevNode = current;
-                        if (!openNode.Contains(node))
-                            openNode.Add(node);
-                    }
-                }
-            }
-        }
-        return GetPath(startPos, endPos);
     }
 }

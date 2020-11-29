@@ -27,8 +27,14 @@ public class MoveSystem : MonoBehaviour
     Vector3 m_velocity;
     Vector3 m_angle;
 
-    public Vector3 Velociry { get { return m_velocity; } set { m_velocity = value; } }
-    public float SetSpeed { set { m_speed = value; } }
+    AStarAgent m_astarAgent;
+    public Vector3 Velocity { get { return m_velocity; } }
+    public Vector3 SetVelocity { 
+        set  {
+            m_velocity = value * m_speed;
+        } 
+    }
+    public float SetSpeed { set { m_speed *= value; } }
     // 5는 속도계수
     public float GetSpeed { get { return m_currSpeed; } }
     public bool SetAccelerate {
@@ -47,16 +53,17 @@ public class MoveSystem : MonoBehaviour
 
     public MoveSystem Init(ref StatSystem stat)
     {
+        m_astarAgent = GetComponent<AStarAgent>();
         m_statSystem = stat;
         m_gearSpeed = new float[6] { stat.GetStat.MaxSpeed * 0.25f, stat.GetStat.MaxSpeed * 0.45f, stat.GetStat.MaxSpeed * 0.65f, stat.GetStat.MaxSpeed * 0.8f, stat.GetStat.MaxSpeed * 0.9f, stat.GetStat.MaxSpeed*1.05f };
         return this;
     }
     public void NextFrame(float deltaTime)
     {
+        ANode node = m_astarAgent.GetNodeToPosition(transform.position);
         float speed = 0;
-        float frictionCoe = Mathf.Clamp01((0.25f * m_statSystem.GetStat.MaxSpeed + m_speed) / m_statSystem.GetStat.MaxSpeed);
         // 마찰력 계산 (기본 마찰 + 코너링마찰계수 * 회전세기)
-        m_friction = (GameCoefficient.DefaultFriction + GameCoefficient.CornorFriction * Mathf.Abs(Handling)) * frictionCoe;
+        m_friction = (GameCoefficient.DefaultFriction + GameCoefficient.CornorFriction * Mathf.Abs(Handling) * m_statSystem.GetStat.Handling) * (1 - node.Friction);
         switch (m_moveState)
         {
             case EMoveState.Accelerate:
@@ -69,28 +76,34 @@ public class MoveSystem : MonoBehaviour
                 speed = Mathf.Clamp(m_speed - (m_friction + m_statSystem.GetStat.BreakFriction) * deltaTime, 0, m_statSystem.GetStat.MaxSpeed);
                 break;
         }
-        m_speed = speed;
-
+        m_speed = speed * node.Speed;
         // 기어 상태
         if (m_speed >= m_gearSpeed[m_currGear])
             m_currGear = Mathf.Clamp(m_currGear + 1, 0, m_maxGear);
         else if(m_currGear != 0 && m_speed <= m_gearSpeed[m_currGear - 1])
             m_currGear = Mathf.Clamp(m_currGear - 1, 0, m_maxGear);
 
+        // 핸들링
         if (m_speed != 0)
         {
-            // 핸들링
             m_angle = transform.eulerAngles;
             m_angle.y += (m_moveState != EMoveState.Break ? GameCoefficient.DefaultHandling : GameCoefficient.BreakHandling)
-                * Handling * deltaTime * m_statSystem.GetStat.Handling * frictionCoe;
-
+                * Handling * deltaTime * m_statSystem.GetStat.Handling;
             transform.eulerAngles = m_angle;
         }
 
         // 가속
-        m_velocity = (m_velocity + (transform.forward * m_speed * deltaTime)) * 0.5f;
-        transform.position += m_velocity;
-        // 속도 (이전거리와 현제거리 * 프레임)
-        m_currSpeed = Vector3.Distance(Vector3.zero, m_velocity) * 1 / deltaTime;
+        m_velocity = (m_velocity * 4 + (transform.forward * m_speed)) * 0.2f;
+        Vector3 nextPos = transform.position + m_velocity * deltaTime;
+        // 이동 가능 체크
+        if (!m_astarAgent.IsPossibleMoveToPosition(nextPos))
+        {
+            m_velocity = m_velocity.normalized;
+            m_speed = 1;
+            return;
+        }
+        transform.position = nextPos;
+        // 속도
+        m_currSpeed = Vector3.Distance(Vector3.zero, m_velocity);
     }
 }

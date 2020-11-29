@@ -26,11 +26,6 @@ public class AStarTestEditor : EditorWindow
         m_endPos = EditorGUI.Vector2Field(new Rect(0, windowSize.y, 400, 20), "EndPos", m_endPos);
         windowSize.y += 40;
 
-        if(GUI.Button(new Rect(0, windowSize.y, 400, 20), "Start Pathfinding"))
-            m_agent.TestSearch(m_startPos, m_endPos);
-
-        windowSize.y += 30;
-
         windowSize.x = 400;
         if (m_window.position.size != windowSize)
             m_window.position = new Rect(m_window.position.position, windowSize);

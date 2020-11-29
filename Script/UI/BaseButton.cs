@@ -12,6 +12,12 @@ public abstract class BaseButton: MonoBehaviour, IPointerUpHandler, IPointerDown
     {
         m_buttonImg = GetComponent<Image>();
     }
-    public abstract void OnPointerDown(PointerEventData eventData);
-    public abstract void OnPointerUp(PointerEventData eventData);
+    public virtual void OnPointerDown(PointerEventData eventData)
+    {
+        m_buttonImg.color = Color.grey;
+    }
+    public virtual void OnPointerUp(PointerEventData eventData)
+    {
+        m_buttonImg.color = Color.white;
+    }
 }

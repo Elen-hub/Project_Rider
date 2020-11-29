@@ -15,13 +15,15 @@ public class AccelerateButton : BaseButton
     }
     public override void OnPointerDown(PointerEventData eventData)
     {
+        base.OnPointerDown(eventData);
         if (m_character != null)
             m_character.GetMoveSystem.SetAccelerate = true;
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
-        //if (m_character != null)
-        //    m_character.GetMoveSystem.SetAccelerate = false;
+        base.OnPointerUp(eventData);
+        if (m_character != null)
+            m_character.GetMoveSystem.SetAccelerate = false;
     }
     private void Update()
     {

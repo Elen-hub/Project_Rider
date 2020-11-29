@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AStarAgent))]
 [RequireComponent(typeof(WheelsAnimation))]
 [RequireComponent(typeof(StatSystem))]
 [RequireComponent(typeof(MoveSystem))]

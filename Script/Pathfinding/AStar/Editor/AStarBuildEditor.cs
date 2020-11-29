@@ -73,12 +73,7 @@ public class AStarBuildEditor : EditorWindow
     }
     static AGrid LoadPathGrid()
     {
-        string path = "Assets/AStarBuildArray.astar";
-
-        if (!File.Exists(path))
-            return null;
-
-        TextAsset asset = new TextAsset(File.ReadAllText(path));
+        TextAsset asset = Resources.Load<TextAsset>("AStarBuildArray");
         string[] value = asset.text.Split('_');
         GameObject obj = new GameObject(typeof(AGrid).ToString(), typeof(AGrid));
         AGrid grid = obj.GetComponent<AGrid>();
@@ -91,7 +86,7 @@ public class AStarBuildEditor : EditorWindow
     }
     void BuildPathGrid()
     {
-        string path = "Assets/AStarBuildArray.astar";
+        string path = "Assets/Resources/AStarBuildArray.txt";
         FileStream file = new FileStream(path, FileMode.Create);
         string[] nodes = new string[m_grid.Nodes.Length+1];
 
@@ -99,7 +94,7 @@ public class AStarBuildEditor : EditorWindow
         nodes[0] = m_grid.NodeRadius + "," + m_grid.WorldSize.x + "," + m_grid.WorldSize.y;
         foreach(ANode node in m_grid.Nodes)
         {
-            string arr = node.GetGridX + "," + node.GetGridY + "," + node.IsWalkable + "," + node.Position.x + "," + node.Position.y;
+            string arr = node.GetGridX + "," + node.GetGridY + "," + node.IsWalkable + "," + node.Position.x + "," + node.Position.y + "," + node.Speed + "," + node.Friction;
             nodes[i] = arr;
             ++i;
         }
