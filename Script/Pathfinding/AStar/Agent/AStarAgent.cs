@@ -30,13 +30,24 @@ public class AStarAgent : MonoBehaviour
     {
         return AStarMng.Instance.GetNode(pos);
     }
-    public bool IsPossibleMoveToPosition(Vector3 pos)
+    public bool GetPossibleMoveToPosition(Vector3 currPos, ref Vector3 pos)
     {
-        ANode node = GetNodeToPosition(pos);
-        if (node == null)
+        ANode CurrNode = GetNodeToPosition(currPos);
+        ANode NextNode = GetNodeToPosition(pos);
+
+        if (NextNode == null)
             return false;
 
-        return node.IsWalkable;
+        // 낮은곳에서 높은곳으로의 이동은 불가
+        if (CurrNode.Position.y - NextNode.Position.y < -AStarMng.MaxMoveHeight)
+            return false;
+
+        if(NextNode.IsWalkable)
+        {
+            pos.y = NextNode.Position.y;
+            return true;
+        }
+        return false;
     }
     public void SetDestination(Vector3 position)
     {
@@ -68,7 +79,7 @@ public class AStarAgent : MonoBehaviour
             {
                 currPos = m_path.Pop();
                 ++count;
-            }
+            } 
 
             Vector3 prev = transform.position;
             Vector3 next = Vector3.MoveTowards(prev, currPos, m_speed * Time.deltaTime);

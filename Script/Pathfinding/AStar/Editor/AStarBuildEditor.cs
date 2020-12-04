@@ -37,14 +37,14 @@ public class AStarBuildEditor : EditorWindow
         Vector2 uiSize = new Vector2(400, 20);
         size.y += 10;
 
-        m_grid.WorldSize = EditorGUI.Vector2Field(new Rect(size, uiSize), "WorldSize", m_grid.WorldSize);
+        m_grid.WorldSize = EditorGUI.Vector3Field(new Rect(size, uiSize), "WorldSize", m_grid.WorldSize);
         size.y += 40;
 
         EditorGUI.LabelField(new Rect(size.x, size.y, uiSize.x * 0.4f, uiSize.y), "NodeRadius");
         m_grid.NodeRadius = EditorGUI.FloatField(new Rect(uiSize .x * 0.4f, size.y, uiSize.x* 0.6f, uiSize.y), m_grid.NodeRadius);
         size.y += 40;
 
-        if (m_grid.WorldSize != Vector2.zero && m_grid.NodeRadius > 0.1f)
+        if (m_grid.WorldSize != Vector3.zero && m_grid.NodeRadius > 0.1f)
         {
             if (GUI.Button(new Rect(size.x, size.y, uiSize.x, 20), "Create Grid"))
                 m_grid.CreateGrid();
@@ -74,6 +74,8 @@ public class AStarBuildEditor : EditorWindow
     static AGrid LoadPathGrid()
     {
         TextAsset asset = Resources.Load<TextAsset>("AStarBuildArray");
+        if (asset == null)
+            return null;
         string[] value = asset.text.Split('_');
         GameObject obj = new GameObject(typeof(AGrid).ToString(), typeof(AGrid));
         AGrid grid = obj.GetComponent<AGrid>();
@@ -81,6 +83,7 @@ public class AStarBuildEditor : EditorWindow
         grid.NodeRadius = float.Parse(arr[0]);
         grid.WorldSize.x = float.Parse(arr[1]);
         grid.WorldSize.y = float.Parse(arr[2]);
+        grid.WorldSize.z = float.Parse(arr[3]);
         grid.CreateGrid(value);
         return grid;
     }
@@ -91,10 +94,10 @@ public class AStarBuildEditor : EditorWindow
         string[] nodes = new string[m_grid.Nodes.Length+1];
 
         int i = 1;
-        nodes[0] = m_grid.NodeRadius + "," + m_grid.WorldSize.x + "," + m_grid.WorldSize.y;
+        nodes[0] = m_grid.NodeRadius + "," + m_grid.WorldSize.x + "," + m_grid.WorldSize.y + ","+ m_grid.WorldSize.z;
         foreach(ANode node in m_grid.Nodes)
         {
-            string arr = node.GetGridX + "," + node.GetGridY + "," + node.IsWalkable + "," + node.Position.x + "," + node.Position.y + "," + node.Speed + "," + node.Friction;
+            string arr = node.GetGridX + "," + node.GetGridY + "," + node.IsWalkable + "," + node.Position.x + "," + node.Position.y + "," + node.Position.z + "," + node.Speed + "," + node.Friction;
             nodes[i] = arr;
             ++i;
         }

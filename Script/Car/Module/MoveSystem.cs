@@ -96,7 +96,7 @@ public class MoveSystem : MonoBehaviour
         m_velocity = (m_velocity * 4 + (transform.forward * m_speed)) * 0.2f;
         Vector3 nextPos = transform.position + m_velocity * deltaTime;
         // 이동 가능 체크
-        if (!m_astarAgent.IsPossibleMoveToPosition(nextPos))
+        if (!m_astarAgent.GetPossibleMoveToPosition(transform.position, ref nextPos))
         {
             m_velocity = m_velocity.normalized;
             m_speed = 1;

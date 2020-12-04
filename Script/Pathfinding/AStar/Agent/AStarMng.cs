@@ -19,6 +19,7 @@ struct ARequestHandler
 }
 public class AStarMng : TSingleton<AStarMng>
 {
+    public static float MaxMoveHeight = 1f;
     Queue<ARequestHandler> m_requestQueue = new Queue<ARequestHandler>();
     ARequestHandler m_currentHandler;
     // 경로를 계산하는 클래스
@@ -66,6 +67,7 @@ public class AStarMng : TSingleton<AStarMng>
         grid.NodeRadius = float.Parse(arr[0]);
         grid.WorldSize.x = float.Parse(arr[1]);
         grid.WorldSize.y = float.Parse(arr[2]);
+        grid.WorldSize.z = float.Parse(arr[3]);
         grid.CreateGrid(value);
         Grid = grid;
     }

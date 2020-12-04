@@ -65,7 +65,7 @@ public class AStarPathfinding
 
                 foreach (ANode node in m_buildGrid.GetNeighbourNode(current))
                 {
-                    if (!node.IsWalkable || closeNode.Contains(node))
+                    if (!node.IsWalkable || closeNode.Contains(node) || current.Position.y - node.Position.y > AStarMng.MaxMoveHeight || current.Position.y - node.Position.y < -AStarMng.MaxMoveHeight)
                         continue;
 
                     int currentNeighbourCost = current.GCost + GetCost(node, m_endNode);
